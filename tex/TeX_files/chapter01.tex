@@ -1,0 +1,518 @@
+\chapter{Introduction and Classical Cryptography}
+
+\noindent
+\textbf{1.1} \hspace{1em} Decrypt the ciphertext provided at the end of the section on mono-alphabetic substitution ciphers.
+\vspace{1em}
+
+To decrypt it, let's play with C++ and create some classes and helper methods. The source code is available at \href{https://github.com/Zer0Leak/KatzCryptoBookSolutions}{KatzCryptoBookSolutions repository on Zer0Leak's  GitHub}
+
+\vspace{1em}
+
+\textbf{Step 01: Finding the word \textit{the}} 
+
+\vspace{1em}
+
+The word \textit{the} is the most common word in english (see \href{https://norvig.com/ngrams/}{https://norvig.com/ngrams/}). That's why we go for it.
+
+Lauch the program with \textit{auto step = kStep01\_1;} This prints:
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c c}
+			VFP & -&  4 \\
+			FPF & - & 4 \\
+			QVF & - & 4
+		\end{tabular}
+	}
+	\captionof{table}{Possible words with three letters in cipherText that appears at least 4 times} 
+\end{center}
+
+
+Notice that only \textit{VFP} or \textit{QVF} may be decrypted to \textit{the}.
+
+Lauch the program with \textit{auto step = kStep01\_2;} This executes:
+
+\begin{lstlisting}[style=cppStyle]
+	AlphabetTools::attackMonoAlphaCipher(_englishAlphabet, cipherText, knownDict, true);
+\end{lstlisting}
+
+And it will print a side-by-side comparison between cipher text and general english letter probabilities.
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c c}
+		F (0.152) & <-->  & e (0.127) \\
+		Q (0.107) & <--> & t (0.091) \\
+		W (0.086) & <--> & a (0.082) \\
+		G (0.078) & <--> & o (0.075) \\
+		L (0.070) & <--> & i (0.070) \\
+		O (0.066) & <--> & n (0.067) \\
+		V (0.061) & <--> & s (0.063) \\
+		H (0.057) & <--> & h (0.061) \\
+		B (0.049) & <--> & r (0.060) \\
+		P (0.041) & <--> & vd (0.043) \\
+		J (0.037) & <--> & l (0.040) \\
+		I (0.037) & <--> & u (0.028) \\
+		Z (0.029) & <--> & c (0.028) \\
+		R (0.029) & <--> & w (0.024) \\
+		M (0.016) & <--> & m (0.024) \\
+		E (0.016) & <--> & f (0.022) \\
+		Y (0.012) & <--> & y (0.020) \\
+		K (0.012) & <--> & g (0.020) \\
+		C (0.012) & <--> & p (0.019) \\
+		A (0.012) & <--> & b (0.015) \\
+		S (0.008) & <--> & v (0.010) \\
+		D (0.008) & <--> & k (0.008) \\
+		X (0.004) & <--> & x (0.002) \\
+		U (0.000) & <--> & j (0.002) \\
+		T (0.000) & <--> & z (0.001) \\
+		N (0.000) & <--> & q (0.001)
+		\end{tabular}
+	}
+	\captionof{table}{Side-by-side cipheText and English letters probabilities} 
+	\label{tab:probabilidades}
+\end{center}
+
+\vspace{1em}
+
+In additon, it prints the sum square disfference of probabilites of from \textit{VFP} and \textit{QVF} to \textit{the}. 
+
+\vspace{1em}
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c c}
+			QVF & -->  & 0.000849 \\
+			VFP & -->  & 0.016486
+		\end{tabular}
+	}
+	\captionof{table}{Sum square distance probabilities mapping to 'the'} 
+\end{center}
+
+\vspace{1em}
+
+Visually looking the table of sorted probabilities, \textit{QVF} seems to be better translated into \textit{the}, in addition, the sum square distance above shows it is much better, \textit{i.e.} the sum square distance is much smaller.
+
+
+Lauch the program with \textit{auto step = kStep01\_3;} This will set the translation table and print the cipherText decryption:
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c c}
+			Q &  t \\
+			V &  h \\
+			F &  e
+		\end{tabular}
+	}
+	\captionof{table}{Tranlation table known until this step.} 
+\end{center}
+
+
+\noindent
+\begin{Verbatim}[frame=single]
+JGRMQOYGHMVBJWRWQFPWHGFFDQGFPFZRKBEEBJIZQQOCIBZKLFAFGQVFZFWWEO
+GWOPFGFHWOLPHLRLOLFDMFGQWBLWBWQOLKFWBYLBLYLFSFLJGRMQBOLWJVFPFW
+QVHQWFFPQOQVFPQOCFPOGFWFJIGFQVHLHLROQVFGWJVFPFOLFHGQVQVFILEOGQ
+ILHQFQGIQVVOSFAFGBWQVHQWIJVWJVFPFWHGFIWIHZZRQGBABHZQOCGFHX
+
+____t_____h_____te____ee_t_e_e__________tt_______e_e_the_e____
+____e_e___________e__e_t______t___e________e_e_____t_____he_e_
+th_t_ee_t_the_t__e___e_e___eth______the___he_e__e__ththe_____t
+___tet__thh__e_e___th_t___h__he_e___e_______t______t___e__
+\end{Verbatim}
+
+\vspace{1em}
+
+\textbf{Step 02: Finding the word \textit{that}.}
+\vspace{1em}
+	
+The word  \textit{that} is one of the most common words in english ,and we will benefit from \textit{t} and \textit{h} we have already found.
+
+Lauch the program with \textit{auto step = kStep02\_1;}.
+
+For this we will replace all characters in cipher text that correspond to letters  \textit{t},  \textit{h},  and  \textit{e}.
+
+This will print all the words that with 4 letters that repeats at least 2 times.
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c c}
+			WJhe & - & 3 \\
+			JheP & - & 3 \\
+			hePe & - & 3 \\
+			WthH & - & 2 \\
+			JGRM & - & 2 \\
+			hHtW & - & 2 \\
+			ePeW & - & 2 \\
+			WHGe & - & 2 \\
+			GRMt & - & 2 \\
+			Othe & - & 2 \\
+			eAeG & - & 2 \\
+			thHt & - & 2 \\
+			ePtO & - & 2
+		\end{tabular}
+	}
+	\captionof{table}{Words with four letters that repeats at least 2 times.} 
+	\label{tab:fourletters}
+\end{center}
+
+Notice that \textit{thHt} is the only one that can match \textit{that}. Then we assume that \textit{H} tranlates into \textit{a}.
+
+Looking Table~\ref{tab:probabilidades} show that \textit{H} probability is  0.057 and \textit{a} probability is 0.082, these are not to close, but we decided to take the risk.
+
+One more mathematical approach could be to see check square distance of \textit{QVFH} to \textit{THEA} we just found, against a different choice in first step, leading to  \textit{VFP?} to \textit{THEA} in this step. (? is the character we would find here if we toke a VFP in the first step).
+
+Also, instead of print Table~\ref{tab:probabilidades} in step \textit{kStep02\_1}, we could narrow down to print only words that matches \textit{tha.t}, but we wanted to print the table to see if something interesting could grab our attention.
+
+Lauch the program with \textit{auto step = kStep02\_2;} This will increment the translation table and print the cipherText decryption:
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c}
+			Q &  t \\
+			V &  h \\
+			F &  e \\
+			H & a
+		\end{tabular}
+	}
+	\captionof{table}{Tranlation table known until this step.} 
+\end{center}
+
+\noindent
+\begin{Verbatim}[frame=single]
+JGRMQOYGHMVBJWRWQFPWHGFFDQGFPFZRKBEEBJIZQQOCIBZKLFAFGQVFZFWWEO
+GWOPFGFHWOLPHLRLOLFDMFGQWBLWBWQOLKFWBYLBLYLFSFLJGRMQBOLWJVFPFW
+QVHQWFFPQOQVFPQOCFPOGFWFJIGFQVHLHLROQVFGWJVFPFOLFHGQVQVFILEOGQ
+ILHQFQGIQVVOSFAFGBWQVHQWIJVWJVFPFWHGFIWIHZZRQGBABHZQOCGFHX
+
+____t___a_h_____te__a_ee_t_e_e__________tt_______e_e_the_e____
+____e_ea____a_____e__e_t______t___e________e_e_____t_____he_e_
+that_ee_t_the_t__e___e_e___etha_a___the___he_e__ea_ththe_____t
+__atet__thh__e_e___that___h__he_e_a_e___a___t____a_t___ea_
+\end{Verbatim}
+
+\vspace{1em}
+
+Now, what bring me attention was the sequence \textit{e\_\_ea\_ththe}, actually \textit{a\_th} or \textit{ea\_th}, because there is no word with \textit{thth}, let's find words that matches \textit{\textasciicircum{}a.th\$} or \textit{.*ea.th\$}. Also notice that in case of \textit{.*ea.th\$}, the two chars before \textit{ea}, can't be any in \textit{thea}.
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{r r r r}
+			index: & count & - & word \\
+			1332: & 61059905 & - & earth \\
+			4722: & 14325239 & - & wealth \\
+			13096: &  3287162 & - & auth \\
+			16550: &  2207395 & - & breadth \\
+			34718: &   623206 & - & anth \\
+			43011: &   430700 & - & unearth \\
+			47176: &   367476 & - & dearth \\
+			58228: &   256042 & - & acth \\
+			59047: &   249807 & - & ealth \\
+			65661:  &  208067 & - & arth \\
+			84092: &   134308 & - & ayth \\
+			185308: &    34516 & - & xearth \\
+			193319: &    32100 & - & aith \\
+			219593: &    26605 & - & aeth \\
+			249908: &    21239 & - & alth \\
+		\end{tabular}
+	}
+	\captionof{table}{Words matching regex \textit{(\texttt{\^{}a.th\$} \textbar \texttt{.*ea.th\$})} with additional constraints} .
+\end{center}
+
+We could map \textit{eaGth} into \textit{earth}, \textit{i.e.} map \textit{G} with 0.078 into \textit{r} with 0.060. And \textit{earth} is the most common between them.
+
+Or, we could map \textit{LeaGth} into \textit{wealth}, \textit{i.e.} map \textit{G} with 0.078 into \textit{l} with 0.040, and map \textit{L} with 0.070 into \textit{w} with 0.024. \textit{wealth} is still very common. But this leads to a bad probability match. One could try to map with it and see if translation shows something interesting.
+
+Also, we could map \textit{aGth} into \textit{auth}, \textit{i.e.} map \textit{G} with 0.078 into \textit{u} with 0.028. The word \textit{auth} not that common but is related to the subject of the book. But the probabilites are not good either.
+
+I will try mapping \textit{eaGth} into \textit{earth}. And see if something interesting follows.
+
+Lauch the program with \textit{auto step = kStep03\_2;} This will increment the translation table and print the cipherText decryption:
+
+\begin{center}
+	\fbox{%
+		\begin{tabular}{l c}
+			Q &  t \\
+			V &  h \\
+			F &  e \\
+			H & a \\
+			G & r
+		\end{tabular}
+	}
+	\captionof{table}{Tranlation table known until this step.} 
+\end{center}
+
+\noindent
+\begin{Verbatim}[frame=single]
+JGRMQOYGHMVBJWRWQFPWHGFFDQGFPFZRKBEEBJIZQQOCIBZKLFAFGQVFZFWWEO
+GWOPFGFHWOLPHLRLOLFDMFGQWBLWBWQOLKFWBYLBLYLFSFLJGRMQBOLWJVFPFW
+QVHQWFFPQOQVFPQOCFPOGFWFJIGFQVHLHLROQVFGWJVFPFOLFHGQVQVFILEOGQ
+ILHQFQGIQVVOSFAFGBWQVHQWIJVWJVFPFWHGFIWIHZZRQGBABHZQOCGFHX
+
+_r__t__ra_h_____te__aree_tre_e__________tt_______e_erthe_e____
+r___erea____a_____e__ert______t___e________e_e__r__t_____he_e_
+that_ee_t_the_t__e__re_e__retha_a___ther__he_e__earththe____rt
+__atetr_thh__e_er__that___h__he_e_are___a___tr___a_t__rea_
+\end{Verbatim}
+
+\vspace{1em}
+
+From now on I will follow similar approach, trying to find words, looking letter's probabilitis, checking if translation seems weird or good. Lauch the program with the next steps to see the output of each step.
+
+If something letter really pulls our attention and we know for sure its translation, then fine, we add it to translation table, but if we are not sure, we try to match a letters that appears more and helps more on next step to find words or weird combinations.
+
+The final result is:
+
+\noindent
+\begin{Verbatim}[frame=single]
+JGRMQOYGHMVBJWRWQFPWHGFFDQGFPFZRKBEEBJIZQQOCIBZKLFAFGQVFZFWWEO
+GWOPFGFHWOLPHLRLOLFDMFGQWBLWBWQOLKFWBYLBLYLFSFLJGRMQBOLWJVFPFW
+QVHQWFFPQOQVFPQOCFPOGFWFJIGFQVHLHLROQVFGWJVFPFOLFHGQVQVFILEOGQ
+ILHQFQGIQVVOSFAFGBWQVHQWIJVWJVFPFWHGFIWIHZZRQGBABHZQOCGFHX
+
+cryptographicsystemsareextremelydifficulttobuildneverthelessfo
+rsomereasonmanynonexpertsinsistondesigningnewencryptionschemes
+thatseemtothemtobemoresecurethananyotherschemeonearththeunfort
+unatetruthhoweveristhatsuchschemesareusuallytrivialtobreak
+\end{Verbatim}
+
+\vspace{1em}
+\noindent
+\textbf{1.2} \hspace{1em} Provide a formal definition of the \textbf{Gen}, \textbf{Enc}, and \textbf{Dec} algorithms for the mono-alphabetic substitution cipher.
+\vspace{1em}
+
+Equating the English alphabet with the set \(\{0, \dots, 25\}\) (so \( a = 0 \), \( b = 1 \), etc.), the message space 
+\( \mathcal{M} \) is then any finite sequence of integers from this set, \textit{i.e.} message \( m = m_1 \cdots m_\ell \) (where \( m_i \in \{0, \dots, 25\} \)).
+
+Let the encryptation key \( K = (k_0, k_1, \dots, k_{25}) \) be an ordered sequence of 26 elements such that:
+
+1. \( k_i \in \{0, 1, \dots, 25\} \) for all \( i \).
+
+2. \( k_i \neq k_j \) for all \( i \neq j \) (i.e., all elements are unique).  
+
+\textbf{Gen} is funciton that creates a key \( k \), which is any permutation of \( \{0, \dots, 25\} \) with \( 26! \) possibilities.
+
+Let \(\textbf{Enc}\) be a function that encrypts a message \( \mathcal{M} = (m_1, m_2, \dots, m_\ell) \) with a given key \( k \). The encryption is defined as:
+
+\[
+ \textbf{Enc\( _k\)}(m_1, m_2, \dots, m_\ell) = (c_1, c_2, \dots, c_\ell) \quad where \quad c_i = k(m_i) = k_{m_i}
+\]
+
+Let \(\textbf{Dec}\) be a function that decrypts a chiphered message \( \mathcal{C} = (c_1, c_2, \dots, c_\ell) \) with a given key \( k \).
+
+Let \(g\) be a inverse of \(k\) function, i.e. \(g(k(m_i)) = m_i \; and \; k(g(c_i)) = c_i  \; \forall \; i\)
+
+I.e., given that \( j \) is the index in \( k \) where \( c_i \) is found, therefore \( j \in \{0, \dots, 25\} \), we have \( g(c_i) = j \).
+
+The decryptation is defined as:
+
+\[
+\textbf{Dec\( _k\)}(c_1, c_2, \dots, c_\ell) = (m_1, m_2, \dots, m_\ell) \quad where \quad m_i = g(c_i)
+\]
+
+\vspace{1em}
+\noindent
+\textbf{1.3} \hspace{1em} Provide a formal definition of the \textbf{Gen}, \textbf{Enc}, and \textbf{Dec} algorithms for the Vigenère cipher. (Note: there are several plausible choices for \textbf{Gen}; choose one.)
+\vspace{1em}
+
+Equating the English alphabet with the set \( A = \{0, \dots, 25\}\) (so \( a = 0 \), \( b = 1 \), etc.), the message space 
+\( \mathcal{M} \) is then any finite sequence of integers from this set, \textit{i.e.} message \( m = m_1 \cdots m_\ell \) (where \( m_i \in \{0, \dots, 25\} \)).
+
+Let the encryptation key \( k = (k_0, k_1, \dots, k_{n}) \) be an ordered sequence of n finite natural integer  elements such that \( k_i \in A \; \forall  \; i \) and \(n\) is a finite integer number. So, for each \(n\) there are \(26^n\) different keys.
+
+\textbf{Gen} is a function that generates a key \( k \), which is an ordered selection with repetition (or a permutation with repetition) of elements from the set \( \{0, \dots, 25\} \) in \( n \) positions. And is defined as:
+
+\[
+\textbf{Gen\( _n\)} = (k_0, k_1, \dots, k_{n-1}) \quad where \quad k_i \in \{0, \dots, 25\}
+\]
+
+Let \(\textbf{Enc}\) be a function that encrypts a message \( \mathcal{M} = (m_0, m_1, \dots, m_{\ell-1}) \) with a given key \( k \) of length \(n\). The encryption is defined as:
+
+\[
+\textbf{Enc\( _k\)}(m_0, m_1, \dots, m_{\ell-1}) = (c_0, c_1, \dots, c_{\ell-1}) \; where \; c_i = k(m, i),\; and \; k(m, i) \;is\;defined\;as:
+\]
+
+\[
+\textbf{h}(m, i) = c_i = [(m_i + k_j) \; mod \;26] \quad where \; j \; = \; i \; mod \; n
+\]
+
+Let \(\textbf{Dec}\) be a function that decrypts a ciphered message \( \mathcal{C} = (c_0, c_1, \dots, c_{\ell-1}) \) with a given key \( k \) of length \(n\). The decryptations is defined as:
+
+\[
+\textbf{Dec\( _k\)}(c_0, c_1, \dots, c_{\ell-1}) = (m_0, m_1, \dots, m_{\ell-1}) \; where \; m_i = g(c, i),\; and \; g(c, i) \;is\;defined\;as:
+\]
+
+\[
+\textbf{g}(c, i) = m_i = [(c_i - k_j) \; mod \;26] \quad where \; j \; = \; i \; mod \; n
+\]
+
+\vspace{1em}
+\noindent
+\textbf{1.4} \hspace{1em} Say you are given a ciphertext that corresponds to English-language text that was encrypted using either the shift cipher or the Vigenère cipher with period greater than 1. How could you tell which was the case?.
+\vspace{1em}
+
+Shift cipher is a special case of Vigenère where the key length is 1.
+
+If the key length is 1, and \( q_i \) is the probability of occurrent of $i$-th letter in cipher text. This means that, if the key is \( j \),  \( q_{(i + j)\;mod\;26} \approx  p_i \), where \(p_i\) is the probability of occurrent of $i$-th letter in english texts. I.e. probalities are close to the same, with shifted \(j\) index in \(q\) and \(p\). Therefore, it is ShiftCipher, check the following:
+
+\[
+\sum_{i=0}^{25} q_i^2 \approx \sum_{i=0}^{25} p_i^2 \approx 0.065
+\]
+
+If you want to double try to find key length using \textit{index of coincidence method} as described in text book and implemented at:
+
+\textbf{vigenereattack.cpp:\_findKeyLength} on \textbf{chap\_01} solutions at \href{https://github.com/Zer0Leak/KatzCryptoBookSolutions}{Zer0Leak's solutions of KatzCryptoBookSolutions on GitHub}.
+
+\vspace{1em}
+\noindent
+\textbf{1.5} \hspace{1em} Implement the attacks described in this chapter for the shift cipher and
+the Vigenère cipher.
+\vspace{1em}
+
+See \textbf{chap\_01} solutions at \href{https://github.com/Zer0Leak/KatzCryptoBookSolutions}{Zer0Leak's solutions of KatzCryptoBookSolutions on GitHub}.
+
+\vspace{1em}
+\noindent
+\textbf{1.6} \hspace{1em} The shift and Vigenère ciphers can also be defined on the 256-character
+alphabet consisting of all possible bytes (8-bit strings), and using XOR
+instead of modular addition.\\[0.5em]
+\hspace*{0.0em}\parbox[t]{\dimexpr\linewidth-3.0em}{
+	\textbf{(a)} Provide a formal definition of both schemes in this case.
+}\\[0.5em]
+
+
+Let's provide the formal defintion of Vigenère cipher. The formal definition of Shift chipher is a special case of it where the encryptation key is  \( K = (k_0)\) i.e. the encryptation key has length 1.\\
+
+Let the \textit{Sign} alphabet to  be the set \(\{0x00, \dots, 0xFF\}\) (where each symbol is an unsigned 8-bits integer), the message space 
+\( \mathcal{M} \) is then any finite sequence from this set, \textit{i.e.} message \( m = m_1 \cdots m_\ell \) (where \( m_i \in Sign \)).\\
+
+Let the encryptation key \( K = (k_0, k_1, \dots, k_{w}) \) be an finite ordered sequence of \textit{w} elements such that \( k_i \in Sign \) for all \( i \).\\
+
+\textbf{Gen} is funciton that creates a key \( k \) with a finite length \textit{w}, which is any permutation of \( \{0x00, \dots, 0xFF\} \) with \( 255^w \) possibilities.\\
+
+Let \(\textbf{Enc}\) be a function that encrypts a message \( \mathcal{M} = (m_1, m_2, \dots, m_\ell) \) with a given key \( k \). The encryption is defined as:
+
+\[
+\textbf{Enc\( _k\)}(m_1, m_2, \dots, m_\ell) = (c_1, c_2, \dots, c_\ell) \quad where \quad c_i = m_i \; XOR \; k_{(i \; mod \; w)}
+\]
+
+Let \(\textbf{Dec}\) be a function that decrypts a chiphered message \( \mathcal{C} = (c_1, c_2, \dots, c_\ell) \) with a given key \( k \). The decryptation is defined as:
+
+\[
+\textbf{Dec\( _k\)}(c_1, c_2, \dots, c_\ell) = (m_1, m_2, \dots, m_\ell) \quad where \quad m_i = c_i \; XOR \; k_{(i \; mod \; w)}
+\]
+
+
+\vspace{1em}
+\noindent
+\hspace*{0.0em}\parbox[t]{\dimexpr\linewidth-3.0em}{
+	\textbf{(b)} Discuss how the attacks we have shown in this chapter can be
+	modified to break these schemes.
+}
+\vspace{1em}
+
+The attacks discussed in this chapter, and implemented in exercise \textbf{1.5} can be modified as follow:\\
+
+The \textbf{Gen} function now uses alphabet \(\{0x00, \dots, 0xFF\}\) instead of \(\{0, \dots, 25\}\).\\
+
+The \textbf{Enc} and \textbf{Dec}  functions now, for each symbol uses \(f_i = s_i \; XOR \; k_{(i \; mod \; w)}\) instead of   \(f_i = (s_i \; \pm \; k_{(i \; mod \; w)}) \; mod \; 26\)
+
+\vspace{1em}
+\noindent
+\textbf{1.7} \hspace{1em} The index of coincidence method relies on a known value for the sum
+of the squares of plaintext-letter frequencies (cf. Equation (1.1)). Why would it not work using the \( \sum_{i} p_i \) itself?
+\vspace{1em}
+
+First of all, \( \sum_{i} p_i \) is always 1 (\textit{i.e.} 100\%). So, it is useless.\\
+
+But also, using square sum, uneven distribution will lead to higher values of sumation, while uniform will result in smaller values. So, using squared sum will help in find the statistic distribution that is closer to english distribuition.
+
+\vspace{1em}
+\noindent
+\textbf{1.8} \hspace{1em} Show that the shift, substitution, and Vigenère ciphers are all trivial to break using a chosen-plaintext attack. How much chosen plaintext is needed to recover the key for each of the ciphers?
+\vspace{1em}
+
+In \textbf{chosen-plaintext attack} there is a cipherd text of your knowledge you want to discover its plain-text pair. You don't know the key though. But you can choose any plain-text of your choice to cipher using the same unknown key. Thus you can have any pair of text/cipher text of you choice generated by the same key that was used to cipher the text under attack.\\
+
+For the Shift cipher, just use the plain text "a"  wich is integer 0, the key is \(k = c_0\). Then use the just discovered key to break the cipher text under attack.\\
+
+For the Vigenère cipher, just use the plain text "aaa..."  wich are integers 000..., for each symbol \(i\), the key symbol at index \(i\) is \(k_i = c_i \). The length of the plain-text you need it at most the lenght of the cipher text you want to break. Then, from \(k\), if it has a repeating sequence, extract a simpler key from it. Then use the just discovered key to break the cipher text under attack.
+
+\vspace{1em}
+\noindent
+\textbf{1.9} \hspace{1em}Assume an attacker knows that a user’s password is either \textbf{bcda} or \textbf{bedg}. Say the user encrypts his password using the shift cipher, and the attacker sees the resulting ciphertext. Show how the attacker can determine the user’s password, or explain why this is not possible.
+\vspace{1em}
+
+It is trivial to discover.\\
+
+bcda is 1230 and bedg is 1436. So, using Shift ciphder will just shift these by k mod 26. But the difference between them must remain the same.\\
+
+Consider the cipher text to be \(c_0c_1c_2c_3\).\\
+
+If key is \textbf{bcda}:
+\begin{quote}
+	\((c_1 - c_0) \bmod 26 = 1\) \\
+	\((c_2 - c_0) \bmod 26 = 2\) \\
+	\((c_3 - c_0) \bmod 26 = 25\)
+\end{quote}
+
+If key is \textbf{bedg}:
+\begin{quote}
+	\((c_1 - c_0) \bmod 26 = 3\) \\
+	\((c_2 - c_0) \bmod 26 = 2\) \\
+	\((c_3 - c_0) \bmod 26 = 5\)
+\end{quote}
+
+It is still possible to break by comparing \(c_1\) and \(c_0\), or  \(c_3\) and \(c_0\). You can compare indexes if their diffence is not the same, \textit{i.e.} comparing  \(c_2\) and \(c_0\) in this case is useless\\
+
+\vspace{1em}
+\noindent
+\textbf{1.10} \hspace{1em}Repeat the previous exercise for the Vigenère cipher using period 2, using period 3, and using period 4.
+\vspace{1em}
+
+(a) Period 2\\
+
+If key is \textbf{bcda}:
+\begin{quote}
+	\((c_2 - c_0) \bmod 26 = 2\)\\
+	\((c_3 - c_1) \bmod 26 = 24\)
+\end{quote}
+
+If key is \textbf{bedg}:
+\begin{quote}
+	\((c_2 - c_0) \bmod 26 = 2\)\\
+    \((c_3 - c_1) \bmod 26 = 2\)
+\end{quote}
+
+So, it is still possible to break by comparing \(c_3\) and \(c_1\)\\
+
+(a) Period 3\\
+
+If key is \textbf{bcda}:
+\begin{quote}
+	\((c_3 - c_0) \bmod 26 = 25\)
+\end{quote}
+
+If key is \textbf{bedg}:
+\begin{quote}
+	\((c_3 - c_0) \bmod 26 = 5\)
+\end{quote}
+
+So, it is still possible to break by comparing \(c_3\) and \(c_0\)
+
+(a) Period 4\\
+
+It is impossible to discover.
+
+\vspace{1em}
+\noindent
+\textbf{1.11} \hspace{1em}The attack on the Vigenère cipher has two steps: (a) find the key length by identifying τ with \( S_{\tau} \approx 0.065 \) (cf. Equation (1.3)) and (b) for each character of the key, find j maximizing \(I_j\) (cf. Equation (1.2)), using \(\{p_i\}\) corresponding to English text. What happens in each case if the underlying plaintext is in a language other than English?
+\vspace{1em}
+
+If the language has a different sum of square of probababilites,  and we don't know that, we will notice that for multiple \(\tau\) the value will be closely the same. And then we can figure out \(\tau\) and the language's sum of square of probababilites. Considering it is a latin alphabet of 26 letter, from 'a' to 'z',  for wrong values of \(\tau\), the sum will tend towards 0.038, i.e. \(\sum_{i=0}^{25} \left(\frac{1}{26}\right)^2\)
+
+For the second part, equation 1.2, it will result in wrong decryption producing garbage.
+
+
+
+

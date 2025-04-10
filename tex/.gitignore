@@ -1,0 +1,47 @@
+# LaTeX intermediate and output files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# TeXstudio specific files
+*.pdfsync
+*.synctex.gz
+*.backup
+*.bak
+*.tmp
+
+# MacOS or Linux related junk
+.DS_Store
+*.swp
+
+# VSCode / other editors
+.vscode/
+*.code-workspace
+
+# Build directories
+_build/
+build/
+
