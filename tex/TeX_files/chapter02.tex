@@ -1,3 +1,167 @@
 \chapter{Perfectly Secret Encryption}
 
-TODO
+\noindent
+\textbf{2.1} \hspace{1em} Prove that, by redefining the key space, we may assume that the key-generation algorithm \textbf{Gen} chooses a uniform key from the key space, without changing Pr[C= c|M= m] for any m,c.
+\vspace{1em}
+
+Motivation: It's is easier to think matematically with a Gen that generates keys at an uniform distribution.
+
+So, let's use a new key $\omega$ that is uniformly distributed over a new key space $\Omega$. And replace the \textbf{Gen() = k}  by the uniform \textbf{GenU() = w}. We also define \textbf{Map(w) = k} in a way that, the distribuiton of \textit{K}  = Map(Gen(W)) is the same as the original.
+
+As an example, let's say \textit{K} = \{0, 1\} with $\Pr[K = 0] = 0.75$ and $\Pr[K = 1] =  0.25$. We than choose \textbf{W} = \{00, 01, 10, 11\} with equal probability (\textit{uniform distribution}), and make Map(w) = 1 if w = 11, otherwise Map(w) = 0.
+
+With the new keyspace we have:
+
+\[
+\Pr[C = c \mid M = m] = \sum_{w \in \mathcal{W}} \Pr[\text{GenU()} = w] \cdot \Pr[\text{Enc}_{map(w)}(m) = c]
+\]
+
+Also notice that for each \( k \) in the original scheme can be produced by one or more \( \omega \) in the new scheme. That is:
+\[
+\Pr[\text{Gen()} = k] = \sum_{\omega : \text{Map}(\omega) = k} \Pr[GenU() = \omega] = \sum_{\omega} \Pr[GenU() = \omega] \cdot \Pr[\text{Enc}_{\text{Map}(\omega)}(m) = c]
+\]
+
+
+Let's prove that from the original key scape.
+
+\[
+\Pr[C = c \mid M = m] = \sum_{k \in \mathcal{K}} \Pr[\text{Gen()} = k] \cdot \Pr[\text{Enc}_k(m) = c]
+\]
+
+\[
+ = \sum_{k \in \mathcal{K}} \left( \sum_{w : \text{map}(w) = k} \Pr[GenU() = w] \right) \cdot \Pr[\text{Enc}_k(m) = c]
+\]
+
+Flatting the summation we get the new schema:
+
+\[
+= \sum_{w \in \mathcal{W}} \Pr[GenU() = w] \cdot \Pr[\text{Enc}_{\text{map}(w)}(m) = c]
+\]
+
+\vspace{1em}
+\noindent
+\textbf{2.2} \hspace{1em} Prove that, by redefining the key space as well as the encryption algorithm, we may assume that encryptation is deterministic without changing Pr[C= c|M= m] for any m,c.
+\vspace{1em}
+
+Motivation: It's is easier to think matematically with a determistic Enc instead of randomized.
+
+If $Enc_k(m)$ is randomized, it generates $c \in C_{m, k} = \{c_0, c_1, ..., c_l\}$ chiphered messages. If we compute then randomized part $\omega$, separately, we can rewrite Enc as  $Enc_k(m, \omega)$.
+
+We can now move out the internal random part and make it as part of the Key. So, the Key is now $k\omega$. Then:
+
+Gen() = k becomes $Gen'() = k\omega$
+
+$Enc_k(m)$ becomes $Enc_{k\omega}'(m) := Enc_k(m, \omega)$
+
+$Dec_k(c)$ becomes  $Dec_{k\omega}'(c)$ that is equal to the original $Dec_k(c)$, because Dec is deteministic and doesn't depend on $\omega$.
+
+From original schema:
+
+\[
+\Pr[C = c \mid M = m] = \sum_{k} \Pr[k]  \sum_{\omega} \Pr[\omega] \cdot \Pr[\text{Enc}_k(m, \omega) = c]
+\]
+
+In new schema:
+
+\[
+\Pr[C = c \mid M = m] = \sum_{k\omega} \Pr[k\omega] \cdot \Pr[\text{Enc}'_{k\omega}(m) = c]
+\]
+
+\[
+\Pr[C = c \mid M = m] = \sum_{k\omega} \Pr[k\omega] \cdot \Pr[\text{Enc}_k(m, \omega) = c]
+\]
+
+Now, since  $\Pr[k\omega]=\Pr[k]\cdot\Pr[\omega]$ (\textit{i.e.} they are independent), the expression becomes:
+
+\[
+\Pr[C = c \mid M = m] = \sum_{k} \sum_{\omega} \Pr[k]  \Pr[\omega] \cdot \Pr[\text{Enc}_k(m\omega) = c]
+\]
+
+\[
+\Pr[C = c \mid M = m] = \sum_{k} \Pr[k] \sum_{\omega} \Pr[\omega] \cdot \Pr[\text{Enc}_k(m\omega) = c]
+\]
+
+Which is the same as the original.
+
+\vspace{1em}
+\noindent
+\textbf{2.3} \hspace{1em} Prove or refute: An encryption scheme with message space $\mathcal{M}$ is perfectly secret if and only if for every probability distribution on $\mathcal{M}$ and every $c0,c1 \in \mathcal{C}$ we have $\Pr[C= c0] = \Pr[C= c1]$.
+\vspace{1em}
+
+This is false as we can see from encryptation scheme bellow.
+
+\begin{align*}
+	\mathcal{M} &= m_0 = \{0,1\} \\
+	\mathcal{K} &= k_0k_1r \in \{0,1\}^3 = \{000,\,001,\,010,...,\,110,\,111\} \\
+	\mathcal{C} &=  c_0c_1 \in \{0,1\}^2 = \{00,\,01,\,01,\,111\} \\
+	Enc_k(m) &=  c_0c_1 \text{ where } c_0 = m \oplus k_0 \oplus r \text{ and } c_1 = r \oplus k_1 \\
+    Dec_k(m) &= m_0 = c_0 \oplus k_0 \oplus r \text{ where } r = c_1 \oplus k_1 \\
+\end{align*}
+
+Then, let's assume the $Pr[M = 0] = 0.5, Pr[k_0 = 0] = 0.5, Pr[k_1 = 0.25] = 0.5, Pr[r = 0] = 0.25$.
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+	\hline
+	$m$ & $k_0$ & $k_1$ & $r$ & $m \oplus k_0 \oplus r$ & $k_1 \oplus r$ & $C$ & $\Pr(C)$ \\
+	\hline
+	0 & 0 & 0 & 0 & 0 & 0 & 00 & 0.015625 \\
+	0 & 0 & 0 & 1 & 1 & 1 & 11 & 0.046875 \\
+	0 & 0 & 1 & 0 & 0 & 1 & 01 & 0.046875 \\
+	0 & 0 & 1 & 1 & 1 & 0 & 10 & 0.140625 \\
+	0 & 1 & 0 & 0 & 1 & 0 & 10 & 0.015625 \\
+	0 & 1 & 0 & 1 & 0 & 1 & 01 & 0.046875 \\
+	0 & 1 & 1 & 0 & 1 & 1 & 11 & 0.046875 \\
+	0 & 1 & 1 & 1 & 0 & 0 & 00 & 0.140625 \\
+	1 & 0 & 0 & 0 & 1 & 0 & 10 & 0.015625 \\
+	1 & 0 & 0 & 1 & 0 & 1 & 01 & 0.046875 \\
+	1 & 0 & 1 & 0 & 1 & 1 & 11 & 0.046875 \\
+	1 & 0 & 1 & 1 & 0 & 0 & 00 & 0.140625 \\
+	1 & 1 & 0 & 0 & 0 & 0 & 00 & 0.015625 \\
+	1 & 1 & 0 & 1 & 1 & 1 & 11 & 0.046875 \\
+	1 & 1 & 1 & 0 & 0 & 1 & 01 & 0.046875 \\
+	1 & 1 & 1 & 1 & 1 & 0 & 10 & 0.140625 \\
+	\hline
+	\multicolumn{7}{|r|}{sum} & 1 \\
+	\hline
+\end{tabular}
+
+\vspace{1em}
+Notice it is still perfectly secret
+
+\begin{tabular}{|c|c||c|c|}
+	\hline
+	\multicolumn{2}{|c||}{Pr$[C \mid M=0]$} & \multicolumn{2}{c|}{Pr$[C \mid M=1]$} \\
+	\hline
+	$C$ & Prob & $C$ & Prob \\
+	\hline
+	00 & 0.15625 & 00 & 0.15625 \\
+	01 & 0.09375 & 01 & 0.09375 \\
+	10 & 0.15625 & 10 & 0.15625 \\
+	11 & 0.09375 & 11 & 0.09375 \\
+	\hline
+	sum & 0.5 & sum & 0.5 \\
+	\hline
+	\multicolumn{3}{|r|}{sum of sums} & 1 \\
+	\hline
+\end{tabular}
+
+\vspace{1em}
+But not all $c \in C$ has same probability.
+
+\begin{tabular}{|c|c|}
+	\hline
+	\multicolumn{2}{|c|}{Pr$[C = c_0] \neq$ Pr$[C = c_1]$} \\
+	\hline
+	$C$ & Prob \\
+	\hline
+	00 & 0.3125 \\
+	01 & 0.1875 \\
+	10 & 0.3125 \\
+	11 & 0.1875 \\
+	\hline
+	sum & 1 \\
+	\hline
+\end{tabular}
+
+
+
