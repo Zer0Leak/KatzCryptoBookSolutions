@@ -163,5 +163,195 @@ But not all $c \in C$ has same probability.
 	\hline
 \end{tabular}
 
+\newpage
+\noindent
+\textbf{2.4} \hspace{1em} Prove or refute: For every perfectly secret encryption scheme it holds that for every distribution on the message space $\mathcal{M}$, every $m, m^\prime, \in \mathcal{M}$ and every $c \in \mathcal{C}$:
+
+$\Pr[\mathcal{M}= m \mid \mathcal{C}= c] = \Pr[\mathcal{M}= m^\prime \mid \mathcal{C}= c]$
+\vspace{1em}
+
+From $\Pr[\mathcal{M}= m \mid \mathcal{C}= c] = \Pr[\mathcal{M}= m]$ (Lemma 2.3 - definition of perfect secret)
+\[
+\frac{\Pr[\mathcal{M}= m \mid \mathcal{C}= c]}{\Pr[\mathcal{M}= m]} = 1
+\]
+Bayes’ Theorem gives:
+\[
+\Pr[M = m \mid C = c] = \frac{\Pr[C = c \mid M = m] \cdot \Pr[M = m]}{\Pr[C = c]}
+\]
+Therefore:
+\[
+\frac{\Pr[M = m \mid C = c]}{\Pr[M = m]} = \frac{\Pr[C = c \mid M = m]}{\Pr[C = c]} = 1
+\]
+and:
+\[
+\frac{\Pr[M = m^\prime \mid C = c]}{\Pr[M = m^\prime]} = \frac{\Pr[C = c \mid M = m^\prime]}{\Pr[C = c]} = 1
+\]
+then:
+\[
+\Pr[C = c \mid M = m] = \Pr[C = c \mid M = m^\prime]
+\]
+
+\newpage
+\noindent
+\textbf{2.5} \hspace{1em}Prove that in Definition 2.6 we may assume $\mathcal{A}$ is deterministic without loss of generality.
+\vspace{1em}
+
+From the experiment. The encryptation scheme $\Pi = (\text{Gen}, \text{Enc}, \text{Dec})$, and the randoness of $k \leftarrow \text{Gen}$ and the choice of what message will be encrypted, \textit{i.e}, the choice of bit $b$, is not under the control of adversary $\mathcal{A}$.
+
+The adversary $\mathcal{A}$, can only choose two messages $m_0, m_1 \in \mathcal{M} \mid m_0 \ne m_1$, and the output bit $b^\prime$.
+
+So, let's fix the experiment, \textit{i.e.} the part adversary $\mathcal{A}$ has not control of.
+
+Then, consider $\mathcal{A}$ is random. Since there are a finite set of combinaitions of  $m_0, m_1 \in \mathcal{M} \mid m_0 \ne m_1$ and $b^\prime$, there is one of these.
+
+For a random $\mathcal{A}$, we have:
+
+\[
+\Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1] = \frac{1}{2}
+\]
+
+Now, let's take the random part out of $\mathcal{A}$, with  $r \leftarrow \mathcal{R}$, and rewrite a deterministic one as  $\mathcal{A}^\prime(r)$. Now we have:
+
+\[
+\Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1] = \sum_{r \in \mathcal{R}} \Pr[\text{Priv}^{\text{eav}}_{A^\prime(r), \Pi} = 1] \cdot \Pr[R = r] = \mathbb{E}_r[\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r), \Pi} = 1]]
+\]
+
+\textit{I.e.} it is the average or expected value of $\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r), \Pi} = 1]$ with $r \in R$.
+
+So, there is a $r^\prime$ where:
+
+$\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r^\prime), \Pi} = 1] \ge \mathbb{E}_r[\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r), \Pi} = 1]] = \Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1] = \frac{1}{2}$
+
+
+But, we can't alllow $\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r^\prime), \Pi} = 1] > \frac{1}{2}$ for any $r$, because, if we do so, then there would be some randoness that would choose just those good $r$s and then $\Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1] > \frac{1}{2}$. And we can't allow any r so that  $\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r^\prime), \Pi} = 1] < \frac{1}{2}$, because it would make $ \mathbb{E}_r[\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r), \Pi} = 1]] < \frac{1}{2}$.
+
+Then, finnaly:
+
+$\Pr[\text{Priv}^{\text{eav}}_{A^\prime(r^\prime), \Pi} = 1] = \Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1] = \frac{1}{2}$
+
+
+\newpage
+\noindent
+\textbf{2.6} \hspace{1em} Prove Lemma 2.7.
+\vspace{1em}
+
+First le't prove that if it is perfect secret, then $\Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1]$ is $\frac{1}{2}$ .
+
+\vspace{1em}
+
+$\Pr[\text{Priv}^{\text{eav}}_{A, \Pi}\ = 1] = \Pr[b^\prime = b]$
+
+$= \Pr[b^\prime = 0 \mid M = m_0]\Pr[M = m_0] + \Pr[b^\prime = 1 \mid M = m_1]\Pr[M = m_1]$
+
+\vspace{1em}
+
+$\mathcal{A}$ is determistic, then, let's assume that if $c \in C_0$  it outputs $b^\prime = 0$ if $c \in C_1$  it outputs $b^\prime = 1$.
+
+$= \Pr[c \in C_0 \mid M = m_0]\Pr[b = 0] + \Pr[c \in C_1 \mid M = m_1]\Pr[b = 1]$
+
+$= \Pr[c \in C_0 \mid M = m_0]\cdot\frac{1}{2} + \Pr[c \in C_1 \mid M = m_1]\cdot\frac{1}{2}$
+
+$=  \sum_{c \in C_0} \Pr[C = c \mid M = m_0]\cdot\frac{1}{2} +  \sum_{c \in C_1} \Pr[C = c \mid M = m_1]\cdot\frac{1}{2}$
+
+\vspace{1em}
+
+If it is perfectly secret, then (from Definition 2.3 and Bayes' theorem):  $\Pr[C = c \mid M = m] = \Pr[C = c]$. Therefore:
+
+\vspace{1em}
+
+$=  \sum_{c \in C_0} \Pr[C = c]\cdot\frac{1}{2} +  \sum_{c \in C_1} \Pr[C = c]\cdot\frac{1}{2}$
+
+$= \frac{1}{2} ( \sum_{c \in C_0} \Pr[C = c] +  \sum_{c \in C_1} \Pr[C = c] )$
+
+\vspace{1em}
+
+Also notice that $C_0 \cup C_1 = C$ and $C_0 \cap C_1 = \emptyset$. Then:
+
+\vspace{1em}
+
+$= \frac{1}{2}  \cdot \sum_{c \in C} \Pr[C = c] = \frac{1}{2}$
+
+\vspace{1em}
+
+To prove the opposite direction, \textit{i.e}, if $\Pr[\text{Priv}^{\text{eav}}_{A, \Pi} = 1] = \frac{1}{2}$, then it is perfectly secret. We will do contraposite, \textit{i.e}, if \textbf{not} perfectly secret than it is \textbf{not} perfectly indistinguishable.
+
+If \textbf{not} perfectly secret, then, from defintion, there must a $m^\prime$ and $c^\prime$ where:
+
+$\Pr[M = m^\prime \mid C = c^\prime] \ne \Pr[M = m^\prime]$
+
+Also, notice that:
+
+$\sum_{m \in \mathcal{M}} \Pr[M = m] = 1$
+
+$ = \sum_{m \in \mathcal{M} \setminus \{m^\prime\}} \Pr[M = m] + \Pr[M = m^\prime]$ 
+
+And
+
+$\sum_{m \in \mathcal{M}} \Pr[M = m \mid C = c^\prime] = 1$
+
+
+$= \sum_{m \in \mathcal{M} \setminus \{m^\prime\}} \Pr[M = m \mid C = c^\prime] + \Pr[M = m^\prime \mid C = c^\prime]$
+
+Notice that we \textbf{can't} assume that  for all $m \in \mathcal{M} \setminus \{m^\prime\} \Rightarrow \Pr[M = m \mid C = c^\prime] \ne \Pr[M = m]$
+
+Because, if we do so, in equations above, it would force that $\Pr[M = m^\prime \mid C = c^\prime] = \Pr[M = m^\prime]$, and it is the oposite of our assumption.
+
+So, there must be at least another $m^{\prime\prime}$ that $\Pr[M = m^\prime \mid C = c^\prime] \ne \Pr[M = m^{\prime\prime}]$
+
+\vspace{1em}
+
+Now let's define the deterministica adversary $\mathcal{A}$ (See exercise 2.5), so that $m_0 = m^\prime, m_1 = m^{\prime\prime}$
+
+Then, now let's consider our message space as $\mathcal{M} = \{m_0, m_1\}$.
+
+$\Pr[M = m \mid C = c^\prime] \ne \Pr[M = m] = \frac{1}{2}$
+
+\vspace{1em}
+
+$\Pr[M = m \mid C = c^\prime] = \frac{\Pr[C = c^\prime \mid M = m]\cdot\Pr[M = m]}{\Pr[C = c^\prime]}$  (Bayes' Theorem)
+
+$\Pr[C = c^\prime \mid M = m] = \frac{\Pr[M = m \mid C = c^\prime]}{\Pr[M = m]}\cdot\Pr[C = c^\prime]$
+
+$\Rightarrow \Pr[C = c^\prime \mid M = m] \ne \Pr[C = c^\prime]$
+
+\vspace{1em}
+
+The adversary knows $\mathcal{A}$ that $\Pr[M = m_0 \mid C = c^\prime] \ne \Pr[M = m_1 \mid C = c^\prime]$, and then, one is greater than $\frac{1}{2}$, and the other is smaller. Let's supose $\Pr[M = m_0 \mid C = c^\prime] > \frac{1}{2}  > \Pr[M = m_1 \mid C = c^\prime]$.
+
+Let's also define adversary $\mathcal{A}$ to output $b^\prime = 0$ if $c = c^\prime$, otherwise it outputs $b^\prime \leftarrow \{0, 1\}$. So, that:
+
+$\Pr[\text{Priv}^{\text{eav}}_{A, \Pi}\ = 1] = \Pr[b^\prime = b]$
+
+$= \Pr[b^\prime = 0 \mid M = m_0]\Pr[M = m_0] + \Pr[b^\prime = 1 \mid M = m_1]\Pr[M = m_1]$
+
+
+$= \frac{1}{2} \cdot ( \Pr[b^\prime = 0 \mid M = m_0] + \Pr[b^\prime = 1 \mid M = m_1])$
+
+let's break down $ \Pr[b^\prime = 0 \mid M = m_0]$
+
+$= \Pr[C = c^\prime \mid M = m_0] + \frac{1}{2} \Pr[C \ne c^\prime \mid M = m_0] $ 
+
+$= \Pr[C = c^\prime \mid M = m_0] + \frac{1}{2} ( 1 -  \Pr[C = c^\prime \mid M = m_0] )$ 
+
+$= \frac{1}{2} + \frac{1}{2} \cdot \Pr[C = c^\prime \mid M = m_0]$ 
+
+let's break down $ \Pr[b^\prime = 1 \mid M = m_1]$
+
+$= \frac{1}{2} \Pr[C \ne c^\prime \mid M = m_1]$ 
+
+So:
+
+$\Pr[\text{Priv}^{\text{eav}}_{A, \Pi}\ = 1] = \frac{1}{2} (\frac{1}{2} + \frac{1}{2} \cdot \Pr[C = c^\prime \mid M = m_0] +  \frac{1}{2} \Pr[C \ne c^\prime \mid M = m_1])$
+
+$= \frac{1}{4} (1 + \Pr[C = c^\prime \mid M = m_0] +  \Pr[C \ne c^\prime \mid M = m_1])$
+
+$\ne \frac{1}{4} (1 + \Pr[C = c^\prime \mid M = m_1] +  \Pr[C \ne c^\prime \mid M = m_1]) = \frac{1}{4} (1 + 1) = \frac{1}{2}$
+
+Therefore:
+
+$\Pr[\text{Priv}^{\text{eav}}_{A, \Pi}\ = 1] \ne \frac{1}{2}$
+
+
+
 
 
