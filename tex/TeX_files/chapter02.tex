@@ -351,6 +351,182 @@ Therefore:
 
 $\Pr[\text{Priv}^{\text{eav}}_{A, \Pi}\ = 1] \ne \frac{1}{2}$
 
+\newpage
+\noindent
+\textbf{2.7} \hspace{1em} What is the ciphertext that results when the plaintext 0x012345 (written in hex) is encrypted using the one-time pad with key 0xFFEEDD?
+\vspace{1em}
+
+Enc is defined as $Enc_k(m) = m \oplus k$, so $c = 0x012345 \oplus 0xFFEEDD = 0xFECD98$
+
+
+\vspace{1em}
+\noindent
+\textbf{2.8} \hspace{1em} For each of the following encryption schemes, state whether the scheme is perfectly secret. Justify your answer in each case.
+\vspace{1em}
+
+\begin{enumerate}
+	\item[(a)] The message space is $\mathcal{M} = \{0, \ldots, 4\}$, and $\textsf{Gen}$ chooses a uniform key from the key space $\mathcal{K} = \{0, \ldots, 5\}$. $\textsf{Enc}_k(m)$ returns $[m + k \bmod 5]$, and $\textsf{Dec}_k(c)$ returns $[c - k \bmod 5]$.
+	
+	\item[(b)] The message space is $\mathcal{M} = \{ m \in \{0,1\}^{\ell} \mid \text{the last bit of } m \text{ is } 0 \}$. $\textsf{Gen}$ chooses a uniform key from $\{0,1\}^{\ell - 1}$. $\textsf{Enc}_k(m)$ returns ciphertext $m \oplus (k \,\|\, 0)$, and $\textsf{Dec}_k(c)$ returns $c \oplus (k \,\|\, 0)$.
+\end{enumerate}
+
+
+\begin{enumerate}
+	\item[(a)] It is not perfectly secret.
+
+Supose $c = 0$ (notice we can generalize it of any value of c from 0 to 4). It can happen in the following cases:
+
+$M = 0 \land k = 5 \Rightarrow \Pr[M = 0 \land k = 5 \mid C = 0] = 1 / 6$
+
+$M = 1 \land k = 4 \Rightarrow \Pr[M = 1 \land k = 4 \mid C = 0] = 1 / 6$
+
+$M = 2 \land k = 3 \Rightarrow \Pr[M = 2 \land k = 3 \mid C = 0] = 1 / 6$
+
+$M = 3 \land k = 2 \Rightarrow \Pr[M = 3 \land k = 2 \mid C = 0] = 1 / 6$
+
+$M = 4 \land k = 1 \Rightarrow \Pr[M = 4 \land k = 1 \mid C = 0] = 1 / 6$
+
+$M = 0 \land k = 0 \Rightarrow \Pr[M = 0 \land k = 0 \mid C = 0] = 1 / 6$
+
+Therefore $\Pr[M = 0 \mid C = 0] = 2 / 6 \ne 1 / 5 =  \Pr[M = 0]$
+
+	\item[(b)] Is perfectly secret.
+		
+It doens't make sense to have $\ell = 1$, because we would only have one message, $0$, and not available key, making no sense encrypt it. So, it is essencially a One-Time Pad encryptation.
+
+The last bit of message plays no rule at all and doesn't change anything. So the proof is exactly the same found in Theorem 2.10, by just replacing all occurences of $2^{-\ell}$ by $2^{-(\ell -1)}$
+
+\end{enumerate}
+
+\newpage
+\noindent
+\textbf{2.9} \hspace{1em} In each of the following schemes, $\textsf{Enc}_k(m) = [m + k \bmod 3]$. State in each case whether the scheme is perfectly secret, and justify your answers.
+\vspace{1em}
+
+
+\begin{enumerate}
+	\item[(a)] The message space is $\mathcal{M} = \{0, 1\}$, and $\textsf{Gen}$ chooses a uniform key from the key space $\mathcal{K} = \{0, 1\}$.
+	
+	\item[(b)] The message space is $\mathcal{M} = \{0, 1, 2\}$, and $\textsf{Gen}$ chooses a uniform key from the key space $\mathcal{K} = \{0, 1, 2\}$.
+	
+	\item[(c)] The message space is $\mathcal{M} = \{0, 1\}$, and $\textsf{Gen}$ chooses a uniform key from the key space $\mathcal{K} = \{0, 1, 2\}$.
+\end{enumerate}
+
+\begin{enumerate}
+	\item[(a)] \textbf{Not} perfectly secret.
+	
+	\begin{tabular}{c|cc}
+		$k \backslash m$ & 0 & 1 \\
+		\hline
+		0 & 0 & 1 \\
+		1 & 1 & 2 \\
+	\end{tabular}
+	
+	\textit{e.g.} $\Pr[M = 0 \mid C = 0] = 1  \ne \Pr[M = 0]$ or $\Pr[M = 1 \mid C = 2] = 1  \ne \Pr[M = 1]$
+	
+	\item[(b)]  Perfectly secret.
+	
+	\begin{tabular}{c|ccc}
+		$k \backslash m$ & 0 & 1  & 2 \\
+		\hline
+		0 & 0 & 1 & 2 \\
+		1 & 1 & 2 & 0 \\
+		2 & 2 & 0 & 1 \\
+	\end{tabular}
+	
+	$\Pr[M = m \mid C = c] = \Pr[M = m]$
+	
+	We could also use Shannon’s theorem because $|\mathcal{M}| = |\mathcal{K}| = |\mathcal{C}|$.
+	
+	(1) holds, k is uniform
+	
+	(2) holds, noticed there is only one value of c per column, and all columns have all possible c. I.e. there is exactly one c per column and none is missing. Notice there is no requirement for one c per line in therorem, but it is required to make scheme correct, otherwise $Dec_k$ is no deterministic.
+	
+	\item[(c)] Perfectly secret.
+	
+	\begin{tabular}{c|ccc}
+		$k \backslash m$ & 0 & 1 \\
+		\hline
+		0 & 0 & 1 \\
+		1 & 1 & 2 \\
+		2 & 2 & 0 \\
+	\end{tabular}
+	
+	$\Pr[M = m \mid C = c] = \Pr[M = m]$
+	
+\end{enumerate}
+
+\newpage
+\noindent
+\textbf{2.10} \hspace{1em} The following questions concern the message space $\mathcal{M} = \{0,1\}^{\leq \ell}$, the set of all nonempty binary strings of length at most $\ell$.
+\vspace{1em}
+
+\begin{enumerate}
+	\item[(a)] Consider the encryption scheme in which $\textsf{Gen}$ chooses a uniform key from $\mathcal{K} = \{0,1\}^{\ell}$, and $\textsf{Enc}_k(m)$ outputs $k_{|m|} \oplus m$, where $k_t$ denotes the first $t$ bits of $k$. Show that this scheme is not perfectly secret for message space $\mathcal{M}$.
+	
+	\item[(b)] Design a perfectly secret encryption scheme for message space $\mathcal{M}$.
+\end{enumerate}
+
+
+\begin{enumerate}
+	\item[(a)] It is easy to show. Consider $\ell = 2$
+	
+		\begin{tabular}{c|cccccc}
+		$k \backslash m$ & 0 & 1 & 00 & 01 & 10 & 11 \\
+		\hline
+		00 & 0 & 1 & 00 & 01 & 10 & 11 \\
+		01 & 0 & 1 & 01 & 00 & 11 & 10 \\
+		10 & 1 & 0 & 10 & 11 & 00 & 01 \\
+		11 & 1 & 0 & 11 & 10 & 01 & 00 \\
+	    \end{tabular}
+	    
+	    Notice that $\Pr[M = 0 \mid C = 0] = 2 / 4 = 1 / 2  \ne 1 / 6 = \Pr[M = 0] $
+	
+	\item[(b)] As follow:
+	
+	If $\ell \in \{2^k \mid k \in \mathbb{N}\}$, \textit{i.e.} $\ell$ is a power of 2. Then we can use the follwing approach.
+	
+	(i) Let $\mathtt{s_1}$ to be a binary string with $\lceil log_2 \ell \rceil$ bits
+	
+	(ii) Encode $\mathtt{s_1}$ with unsigned binary reprensetation of \textit{m-1}, \textit{i.e.} $\mathtt{s_1} = \textit{bin}(|m|-1)$, we do $- 1$ because there is no $|m| = 0$, and we don't want to wast $000...0$ with nothing.
+    
+    (iii) Cypher $\mathtt{s_1}$ with $\mathtt{s_1}' =  k_{|\lceil log_2 \ell \rceil|} \oplus \mathtt{s_1}$
+	
+	(iv) Let $r$ be $r \leftarrow \{0, 1\}^{\ell - |m|}$, \textit{i.e.} uniform random bit string with $\ell - |m|$ bits.
+	
+	$Enc^{'}_k(m) = s_1' \| k_{|m|} \oplus m \| r$
+	
+	Notice that all $c \in C$ now has exactly $\lceil log_2 \ell \rceil + \ell$ bits.
+	
+	$Dec^{'}_k(c) \Rightarrow$
+	
+	$\mathtt{s_1} =  \mathtt{s_1}'  \oplus k_{|\lceil log_2 \ell \rceil|}$, notice $\mathtt{s_1} = |m| - 1$
+	
+    $c' = c_{[\lceil log_2 \ell \rceil \,..\,\lceil log_2 \ell \rceil + \mathtt{s_1}+1]}$, \textit{i.e.} substring starting at $\lceil log_2 \ell \rceil$, and length $\mathtt{s_1} + 1 = |m|$
+	
+	$Dec^{'}_k(c) = k_{|\mathtt{s_1} + 1|} \oplus c' = m$
+	
+	If $\ell \notin \{2^k \mid k \in \mathbb{N}\}$, \textit{i.e.} $\ell$ is \textbf{not} a power of 2. Then we can use the follwing approach.
+	
+	Add $\lceil log_2 \ell \rceil$ bits to k, \textit{i.e.} $\mathcal{K} = \{0,1\}^{\ell + \lceil log_2 \ell \rceil}$
+	
+	Now encrypt/decrypt $\mathtt{s_1}$ with the last $\lceil log_2 \ell \rceil$ bits of k. And do similar to scheme above.
+	
+	This is required because if $\ell$ in not power of 2, then $|m| = \mathtt{s_1} + 1 = \mathtt{s_1}' \oplus k_{\lceil log_2 \ell \rceil} + 1$ can't be greater than $\ell$, and so, some $ k_{\lceil log_2 \ell \rceil}$ are not allowed, giving a hint of $ k_{\lceil log_2 \ell \rceil}$ bits, and then a hint on message because some $m_{\lceil log_2 \ell \rceil} = k_{\lceil log_2 \ell \rceil} \oplus c_{\lceil log_2 \ell \rceil}$ are not allowed too. Using then ending k bits that are only used to cipher message size won't hint the message or message size itself.
+	
+	
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
