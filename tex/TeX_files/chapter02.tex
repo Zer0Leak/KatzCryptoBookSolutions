@@ -91,14 +91,14 @@ Which is the same as the original.
 This is false as we can see from encryptation scheme bellow.
 
 \begin{align*}
-	\mathcal{M} &= m_0 = \{0,1\} \\
+	\mathcal{M} &= m \in \{0,1\} \\
 	\mathcal{K} &= k_0k_1r \in \{0,1\}^3 = \{000,\,001,\,010,...,\,110,\,111\} \\
 	\mathcal{C} &=  c_0c_1 \in \{0,1\}^2 = \{00,\,01,\,01,\,111\} \\
 	Enc_k(m) &=  c_0c_1 \text{ where } c_0 = m \oplus k_0 \oplus r \text{ and } c_1 = r \oplus k_1 \\
     Dec_k(m) &= m_0 = c_0 \oplus k_0 \oplus r \text{ where } r = c_1 \oplus k_1 \\
 \end{align*}
 
-Then, let's assume the $Pr[M = 0] = 0.5, Pr[k_0 = 0] = 0.5, Pr[k_1 = 0.25] = 0.5, Pr[r = 0] = 0.25$.
+Then, let's assume the $Pr[M = 0] = 0.5, Pr[k_0 = 0] = 0.5, Pr[k_1 = 0] = 0.25, Pr[r = 0] = 0.25$.
 
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 	\hline
@@ -162,6 +162,12 @@ But not all $c \in C$ has same probability.
 	sum & 1 \\
 	\hline
 \end{tabular}
+
+\vspace{1em}
+
+Copy and play with the spreadsheet:
+
+\href{https://docs.google.com/spreadsheets/d/1qLP6iL_UqS_zug2SqOV1BsSl5UjEBATFUr7Q9GxjIYQ/edit?usp=sharing}{KatzProb third ed. exec. 2.3}
 
 \newpage
 \noindent
@@ -859,7 +865,156 @@ Show that perfect secrecy can be achieved with \( |K| < |M| \) when \( t \geq 1 
 
 \vspace{1em}
 
+Assuming $\mathcal{K}$ is uniform and for the first  $\ell = log_2|\mathcal{K}|$ bits of $m$ and $c$ we have $\Pr[\mathcal{M}_\ell = m_\ell \mid C_\ell = c_\ell] = \Pr[\mathcal{M}_\ell = m_\ell]$
 
+We can add more $log_2|\mathcal{M}| - log_2|\mathcal{K}|$ random bits to the key such that $\Pr[\mathcal{M} =m \mid C = c] = \Pr[\mathcal{M} = m]$. But in this case, $\Pr[\text{Dec}_\mathcal{K}(\text{Enc}_\mathcal{K}(m)) = m] = \frac{1}{2^{log_2|\mathcal{M}|-log_2|\mathcal{K}|}}= 2^{-(log_2|\mathcal{M}| - log_2|\mathcal{K}|)}$, because only one in $2^{(log_2|\mathcal{M}| - log_2|\mathcal{K}|)}$ random possibilities is correct.
+Then, the lower bound for $log_2|\mathcal{K}| \ge log_2|\mathcal{M}| - t = log_2(|\mathcal{M}| / 2^t)$, therefore:
+
+$|\mathcal{K}| \ge |\mathcal{M}| \cdot 2^{-t}$
+
+
+\newpage
+\noindent
+\textbf{2.18} \hspace{1em} Let $\varepsilon>0$ be a constant.  
+Say an encryption scheme is \emph{$\varepsilon$-perfectly secret} if for every adversary $\mathcal{A}$ it holds that
+\[
+\Pr\bigl[\text{PrivKeav}_{\mathcal{A},\Pi}=1\bigr] \;\le\;
+\frac12 \;+\; \varepsilon .
+\]
+(Compare to Definition~2.6.)  
+
+Consider a variant of the one-time pad where $M=\{0,1\}^\ell$ and the key is chosen uniformly from an arbitrary
+set $K\subseteq\{0,1\}^\ell$ with $|K|=(1-\varepsilon)\,2^\ell$; encryption and decryption are otherwise the same.
+
+\begin{enumerate}
+	\item[(a)] Prove that this scheme is $\varepsilon$-perfectly secret.
+	\item[(b)] Prove that this scheme is
+	$\displaystyle \frac{\varepsilon}{2(1-\varepsilon)}$-perfectly secret when $\varepsilon\le \tfrac12$.  
+	(Note that $\tfrac{\varepsilon}{2(1-\varepsilon)}\le\varepsilon$ here, so this is an improvement over part~(a).)
+	\item[(c)] Prove that any \textbf{deterministic} scheme that is $\varepsilon$-perfectly secret must satisfy
+	\[
+	|K| \;\ge\; (1-2\varepsilon)\,|M|.
+	\]
+	(Note: It is an open question to prove a tight lower bound that also holds for \emph{randomized} schemes.)
+\end{enumerate}
+
+\vspace{1em}
+
+\begin{enumerate}
+	\item[(a)] The complement of $\mathcal{K}$ is $\overline{\mathcal{K}} = \{0,1\}^\ell - \mathcal{K}$
+
+Notice that for each key $\overline{k} \in \overline{\mathcal{K}}$ there is a $k \in \mathcal{K}$ such that $c = m_0 \oplus k = m_1 \oplus \overline{k}$, such that, those $\epsilon2^\ell$ keys, it is possible to reaveal the message with $p=1$. While the others $(1-\epsilon)2^\ell - \epsilon2^\ell$, chance is $\frac{1}{2}$.  So, let's consider the upper bound of choosing by lucky $m_0$ and $m_1$
+
+$\Pr[b' = b] =$
+
+$\le \Pr[b' = 0 \mid M = m_0] \cdot \Pr[M = m_0]$
+
+$+ \Pr[b' = 1 \mid M = m_1] \cdot \Pr[M = m_1]$
+
+$\le ( \frac{1}{2} \frac{(1-\epsilon)2^\ell-\epsilon2^\ell}{(1-\epsilon)2^\ell}  + 1  \frac{\epsilon2^\ell}{(1-\epsilon)2^\ell})\cdot \frac{1}{2}$
+
+$+ ( \frac{1}{2} \frac{(1-\epsilon)2^\ell-\epsilon2^\ell}{(1-\epsilon)2^\ell}  + 1  \frac{\epsilon2^\ell}{(1-\epsilon)2^\ell})\cdot \frac{1}{2}$
+
+$\le \frac{1}{2} \frac{(1-\epsilon)2^\ell-\epsilon2^\ell}{(1-\epsilon)2^\ell}  + 1  \frac{\epsilon2^\ell}{(1-\epsilon)2^\ell}$
+
+$\le \frac{(1-\epsilon)2^\ell-\epsilon2^\ell}{2(1-\epsilon)2^\ell}  + \frac{2\epsilon2^\ell}{2(1-\epsilon)2^\ell}$
+
+$\le \frac{1-2\epsilon}{2(1-\epsilon)}  + \frac{2\epsilon}{2(1-\epsilon)}$
+
+$\le \frac{1}{2(1-\epsilon)} = \frac{1-\epsilon+\epsilon}{2(1-\epsilon)} = \frac{1-\epsilon}{2(1-\epsilon)} + \frac{\epsilon}{2(1-\epsilon)}$
+
+$\le \frac{1}{2} + \frac{\epsilon}{2(1-\epsilon)}$
+
+For $\frac{1}{2} \ge \epsilon \ge 0$:
+
+\href{https://docs.google.com/spreadsheets/d/1qLP6iL_UqS_zug2SqOV1BsSl5UjEBATFUr7Q9GxjIYQ/edit?usp=sharing}{KatzProb third ed. chap 2}
+
+$\Pr[b' = b] \le \frac{1}{2} + \frac{\epsilon}{2(1-\epsilon)} \le \frac{1}{2} + \epsilon$
+
+For $\epsilon > \frac{1}{2}$, doesn't matter because $\Pr\bigl[\text{PrivKeav}_{\mathcal{A},\Pi}=1\bigr]$ is already $1$
+
+    \item[(b)]  Already proved above.
+    
+    \item[(c)] Lets do a contrapositive proof \textit{i.e.}, $|K| < (1 - 2\epsilon)2^\ell \rightarrow \Pr[b' = b] > \frac{1}{2} + \epsilon$
+    
+    Let $C^{m_0}$ be $c \in C : \exists Enc_k(m_0) = c$
+    
+    Given two messages $m_0$ and $m_1$, let the Adversary output 0 if $c \in C^{m_0}$, otherwise outputs 1.
+    
+    $\Pr[b'=b] = \Pr[C \in C^{m_0} \mid M = m_0] + \Pr[C \not\in C^{m_0} \mid M = m_1]$
+    
+    $\Pr[b'=b] = 1 \cdot \frac{1}{2} + \frac{2\epsilon2^\ell + j}{(1 - 2\epsilon)2^\ell - j}  \cdot \frac{1}{2}$
+    
+    $j$ is a minimal positive number, that makes $|K| < (1 - 2\epsilon)2^\ell$ instead of $|K| < (1 - 2\epsilon)2^\ell$. Also notice that, biger $j$ (up to $|K| = (1 - 2\epsilon)2^\ell - j \ge 1$) makes  biger  $\Pr[b'=b]$, So, it is ok to use minimal $j$ as possible.
+    
+    $\Pr[b'=b] > \frac{1}{2} + \frac{\epsilon}{(1 - 2\epsilon)} > \frac{1}{2} + \epsilon$
+    
+\end{enumerate}
+
+
+\newpage
+\noindent
+\textbf{2.19} \hspace{1em} In this problem we consider definitions of perfect secrecy for the encryp\-tion of two messages (using the same key).  
+We consider distributions on \emph{pairs} of messages from the message space $M$; let $M_1,M_2$ be random variables denoting the first and second message, respectively.  
+(These random variables are \textbf{not} assumed to be independent.)  
+We generate a (single) key $k$, sample a pair of messages $(m_1,m_2)$ according to the given distribution, and then compute $c_1 \gets \mathrm{Enc}_k(m_1), \qquad c_2 \gets \mathrm{Enc}_k(m_2).$
+This induces a distribution on pairs of ciphertexts, and we let $C_1,C_2$ be the corresponding random variables.
+
+\begin{enumerate}
+	\item[(a)] Say an encryption scheme $(\text{Gen},\text{Enc},\text{Dec})$ is \emph{perfectly secret for two messages} if for \emph{all} distributions on $M\times M$, all $m_1,m_2\in M$, and all ciphertexts $c_1,c_2\in C$ with $\Pr[C_1=c_1 \wedge C_2=c_2]>0$ it holds that $\Pr[M_1=m_1 \wedge M_2=m_2 \mid C_1=c_1 \wedge C_2=c_2] \;=\; \Pr[M_1=m_1 \wedge M_2=m_2].$
+	Prove that \textbf{no} encryption scheme can satisfy this definition.  
+	
+	\textit{Hint:} Take $c_1=c_2$.
+	
+	\item[(b)] Say an encryption scheme \((\text{Gen},\text{Enc},\text{Dec})\) is \emph{perfectly secret for two \textbf{distinct} messages} if, for every distribution on \(M \times M\) in which the first and second messages are guaranteed to be different (i.e.\ the distribution is supported only on pairs \((m_1,m_2)\) with \(m_1 \neq m_2\)), for all \(m_1,m_2 \in M\), and for all \(c_1,c_2 \in C\) with \(\Pr[C_1 = c_1 \wedge C_2 = c_2] > 0\), it holds that
+	\[
+	\Pr[M_1 = m_1 \wedge M_2 = m_2 \mid C_1 = c_1 \wedge C_2 = c_2]
+	\;=\;
+	\Pr[M_1 = m_1 \wedge M_2 = m_2].
+	\]
+	
+	Show an encryption scheme that provably satisfies this definition.  
+	
+	\textit{Hint:} The encryption scheme you propose need not be efficient, although an efficient solution is possible.
+	
+\end{enumerate}
+
+\begin{enumerate}
+	\item[(a)] $Enc_{k'}(M_1) = c_1$ and $Enc_{k'}(M_2) = c_2$. If $m_1 \ne m_2$, it is not possible to have $c_1 = c_2 = c$, because $Dec_{k'}(c)$ becomes not deterministic.
+	
+	$\Pr[C_1 = c \land C_2 = c \mid M_1 = m_1 \land M_2 = m_2]$
+	
+	$\Pr[C_1 = c \land C_2 = c \mid M_1 = m_1 \land M_2 = m_2 \land K = k'] = 0$
+	
+	So,
+	
+	$\Pr[M_1 = m_1 \land M_2 = m_2 \mid C_1 = c \land C_2 = c] = \frac{\Pr[C_1 = c \land C_2 = c \mid M_1 = m_1 \land M_2 = m_2]\Pr[ M_1 = m_1 \land M_2 = m_2]}{\Pr[C_1 = c \land C_2 = c]}$
+	
+	$\Pr[M_1 = m_1 \land M_2 = m_2 \mid C_1 = c \land C_2 = c] = 0$
+	
+	The intiution says, that, if you encrypt a second message with the same key, it leaks information about the message. Becuase, if $c_1 = c_2$, then you know messages are the same, if $c_1 \ne c_2$, you know message differs. It is like Shift Cipher a message with two characters.
+	
+	\item[(b)] Use OTP with a key $k = k_1k_2$ where $|K| = |M|^2 \rightarrow log_2(|K|) = 2 \cdot log_2(|M|)$
+	
+	$\Pr\!\bigl[M_1 = m_1 \land M_2 = m_2 \;\big|\; C_1 = c_1 \land C_2 = c_2\bigr] = $ 
+	\[
+	\frac{\Pr\!\bigl[C_1 = c_1 \land C_2 = c_2 \;\big|\; M_1 = m_1 \land M_2 = m_2\bigr]\;
+		\Pr\!\bigl[M_1 = m_1 \land M_2 = m_2\bigr]}
+	{\displaystyle
+		\sum_{\substack{(m'_1,m'_2)\in M^2\\ m'_1 \neq m'_2}}
+		\Pr\!\bigl[C_1 = c_1 \land C_2 = c_2 \;\big|\; M_1 = m'_1 \land M_2 = m'_2\bigr]\;
+		\Pr\!\bigl[M_1 = m'_1 \land M_2 = m'_2\bigr]}
+	\tag{Bayes}
+	\]
+	
+	\[
+	= \frac{\frac{1}{|K|^2}\;
+		\Pr\!\bigl[M_1 = m_1 \land M_2 = m_2\bigr]}
+	{\displaystyle
+		1 \cdot \frac{1}{|K|^2}}
+	\]
+	
+\end{enumerate}
 
 
 
